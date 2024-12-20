@@ -18,13 +18,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <AppBarButton Icon="OpenFile" Label="Open"  Command="{x:Bind ViewModel.OpenFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>
+            <AppBarButton Icon="OpenFile" Label="Open Raw Data"  Command="{x:Bind ViewModel.OpenRawFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>
+            <AppBarButton Icon="OpenFile" Label="Open Feature Data"  Command="{x:Bind ViewModel.OpenFeatureFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>
             <AppBarButton Icon="SaveLocal" Label="Save" Click="SaveFileButton_Click"/>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" Spacing="2">
             <TextBlock Text="Save location:"  VerticalAlignment="Center" Padding="0 0 5 0"/>
-            <TextBlock Text="{x:Bind ViewModel.OpenFileCommand.FilePath, Mode=TwoWay}"  VerticalAlignment="Center"/>
+            <TextBlock Text="{x:Bind ViewModel.OpenRawFileCommand.FilePath, Mode=TwoWay}"  VerticalAlignment="Center"/>
             <TextBox  VerticalAlignment="Center" PlaceholderText="Type file name" Width="180" Text="{x:Bind ViewModel.OpenFileName, Mode=TwoWay}"/>
             <TextBlock Text=".txt" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>          
         </StackPanel>       
