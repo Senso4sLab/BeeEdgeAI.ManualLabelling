@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace BeeEdgeAI.ManualLabelling.Models;
 
-public class BeeHiveData : IEntityBase
+public class BeeHiveRawData 
 {
-    public DateTime TimeStamp { get ; set ; }
-    public double Mass { get; set ; }   
+    public DateTime Timestamp { get ; set ; }
+    public int Mass { get; set ; }
+
+   
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using BeeEdgeAI.ManualLabelling.Commands;
+using BeeEdgeAI.ManualLabelling.Services;
 using BeeEdgeAI.ManualLabelling.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -42,7 +44,7 @@ namespace BeeEdgeAI.ManualLabelling
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow(new MainViewModel());
+            m_window = new MainWindow(new MainViewModel(new OpenRawFileCommand(new FileRepository())));
             m_window.Activate();
         }
 

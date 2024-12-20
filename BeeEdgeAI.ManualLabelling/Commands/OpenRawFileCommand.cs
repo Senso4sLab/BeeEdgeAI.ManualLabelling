@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BeeEdgeAI.ManualLabelling.Interfaces;
+using BeeEdgeAI.ManualLabelling.Models;
+using System;
+using System.Collections.Generic;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -21,10 +24,13 @@ public class OpenRawFileCommand : DelegateCommand
             }
         }
     }
-       
-    public OpenRawFileCommand()
+
+    public IEnumerable<BeeHiveRawData> BeeHiveRawData { get;set; } = new List<BeeHiveRawData>();
+
+    private readonly IRepository _repository;
+    public OpenRawFileCommand(IRepository repository)
     {
-      
+      _repository = repository;
     }
 
     public override bool CanExecute(object? parameter) => 
@@ -32,7 +38,16 @@ public class OpenRawFileCommand : DelegateCommand
 
     public async override void Execute(object? parameter)
     {
-        this.FilePath = await OpenPickerAndPickFileAsync(parameter) is StorageFile storageFile? RemoveFileNameFromPath(storageFile) : string.Empty;
+        if(await OpenPickerAndPickFileAsync(parameter) is StorageFile storageFile)
+        {
+            FilePath = RemoveFileNameFromPath(storageFile);
+            BeeHiveRawData = await _repository.GetAllAsync<BeeHiveRawData>(storageFile.Path);
+        }
+        else
+            FilePath = string.Empty;
+
+
+        
     }
 
     private async Task<StorageFile?> OpenPickerAndPickFileAsync(object? parameter)

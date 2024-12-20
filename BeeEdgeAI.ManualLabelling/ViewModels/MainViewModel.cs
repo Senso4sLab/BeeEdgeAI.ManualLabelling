@@ -1,4 +1,5 @@
 ﻿using BeeEdgeAI.ManualLabelling.Commands;
+using BeeEdgeAI.ManualLabelling.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -22,15 +23,15 @@ public class MainViewModel : BaseViewModel
 			}			
 		}
 	}
-
 	public OpenRawFileCommand OpenRawFileCommand { get; set; }
-    public OpenFeatureFileCommand OpenFeatureFileCommand { get; set; }
-
-    public MainViewModel()
+    public OpenFeatureFileCommand OpenFeatureFileCommand { get; set; }	
+    public MainViewModel(OpenRawFileCommand openFileCommand)
     {
-        this.Title = "Manual labelling data for supervise learning";
-        this.OpenRawFileCommand = new OpenRawFileCommand();
-		this.OpenFeatureFileCommand = new OpenFeatureFileCommand();
+		
+        Title = "Manual labelling data for supervise learning";
+		OpenRawFileCommand = openFileCommand;
+        OpenFeatureFileCommand = new OpenFeatureFileCommand();
     }
+
 
 }

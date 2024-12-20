@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BeeEdgeAI.ManualLabelling.Interfaces;
 
-public interface IRepository<T>
+public interface IRepository
 {
-    Task<IEnumerable<T>> GetAllAsync(string fileName);
+    Task<IEnumerable<T>> GetAllAsync<T>(string fileName);
 
 }
