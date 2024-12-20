@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BeeEdgeAI.ManualLabelling (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "BeeEdgeAI.ManualLabelling (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
