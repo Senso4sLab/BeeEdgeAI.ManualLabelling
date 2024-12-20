@@ -6,7 +6,7 @@ using Windows.Storage.Pickers;
 
 namespace BeeEdgeAI.ManualLabelling.Commands;
 
-public class OpenFileCommand : DelegateCommand
+public class OpenRawFileCommand : DelegateCommand
 {
     private string filePath = string.Empty;
     public string FilePath
@@ -22,7 +22,7 @@ public class OpenFileCommand : DelegateCommand
         }
     }
        
-    public OpenFileCommand()
+    public OpenRawFileCommand()
     {
       
     }

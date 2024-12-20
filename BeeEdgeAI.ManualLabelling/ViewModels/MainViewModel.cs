@@ -23,12 +23,12 @@ public class MainViewModel : BaseViewModel
 		}
 	}
 
-	public OpenFileCommand OpenFileCommand { get; set; }
+	public OpenRawFileCommand OpenFileCommand { get; set; }
 
     public MainViewModel()
     {
         this.Title = "Manual labelling data for supervise learning";
-        this.OpenFileCommand = new OpenFileCommand();		
+        this.OpenFileCommand = new OpenRawFileCommand();		
     }
 
 }
