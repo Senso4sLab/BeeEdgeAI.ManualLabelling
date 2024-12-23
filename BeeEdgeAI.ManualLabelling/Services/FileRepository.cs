@@ -15,15 +15,26 @@ public class FileRepository : IRepository
 {   
     public async Task<IEnumerable<T>> GetAllAsync<T>(string fileName)
     {
-        var config = new CsvConfiguration(CultureInfo.CurrentCulture);
-        
-        var result = config.Delimiter;
-
-
         using (var reader = new StreamReader(fileName))
-        using (var csv = new CsvReader(reader, config))
+        using (var csv = new CsvReader(reader, CsvConfig))
             return await csv.GetRecordsAsync<T>().ToListAsync();
     }
+
+    public async Task SaveAsync<T>(IEnumerable<T> items, string fileName)
+    {
+        using (var writer = new StreamWriter(fileName))
+        using (var csv = new CsvWriter(writer, CsvConfig))           
+            await csv.WriteRecordsAsync(items);
+    }
+
+    private CsvConfiguration CsvConfig =>
+        new CsvConfiguration(CultureInfo.InvariantCulture)
+        {           
+            Delimiter = ";",
+        };
+
+
+   
 }
 
 

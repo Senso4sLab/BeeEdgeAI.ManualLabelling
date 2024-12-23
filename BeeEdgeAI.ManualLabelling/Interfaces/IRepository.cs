@@ -9,5 +9,6 @@ namespace BeeEdgeAI.ManualLabelling.Interfaces;
 public interface IRepository
 {
     Task<IEnumerable<T>> GetAllAsync<T>(string fileName);
+    Task SaveAsync<T>(IEnumerable<T>items, string fileName);
 
 }

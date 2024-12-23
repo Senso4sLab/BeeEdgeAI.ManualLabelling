@@ -17,7 +17,7 @@ public class BeeHiveFeatures
 public class BeeHiveVisualData
 {
     public List<BeeHiveFeatures> Features { get; set; } = new List<BeeHiveFeatures>();
-    public List<BeeHiveRawData> RawData { get; set; } = new List<BeeHiveRawData>();
+    public List<BeeHiveSample> RawData { get; set; } = new List<BeeHiveSample>();
 
 
 }

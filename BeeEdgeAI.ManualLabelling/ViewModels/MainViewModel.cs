@@ -1,37 +1,132 @@
 ﻿using BeeEdgeAI.ManualLabelling.Commands;
-using BeeEdgeAI.ManualLabelling.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
+using BeeEdgeAI.ManualLabelling.Models;
+
 
 namespace BeeEdgeAI.ManualLabelling.ViewModels;
 
 public class MainViewModel : BaseViewModel
 {
-	private string openFileName = string.Empty;
-	public string OpenFileName
+	private string fileName = string.Empty;
+	public string FileName
 	{
-		get => openFileName;
+		get => fileName;
 		set 
 		{ 
-			if(openFileName != value)
+			if(fileName != value)
 			{
-				openFileName = value;
+				fileName = value;
 				RaiseOnPropertyChanged();
-			}			
+                RaiseOnPropertyChanged(nameof(FilePath));
+            }			
 		}
 	}
-	public OpenRawFileCommand OpenRawFileCommand { get; set; }
-    public OpenFeatureFileCommand OpenFeatureFileCommand { get; set; }	
-    public MainViewModel(OpenRawFileCommand openFileCommand)
+
+    private string fileDirectory = string.Empty;
+    public string FileDirectory
     {
-		
-        Title = "Manual labelling data for supervise learning";
-		OpenRawFileCommand = openFileCommand;
-        OpenFeatureFileCommand = new OpenFeatureFileCommand();
+        get => fileDirectory;
+        set
+        {
+            if (fileDirectory != value)
+            {
+                fileDirectory = value;                
+                RaiseOnPropertyChanged();
+                RaiseOnPropertyChanged(nameof(FilePath));
+
+                
+            }
+        }
+    }
+
+    public string FilePath => this.FileDirectory + this.FileName + ".txt";
+
+    private string? labelState = null;
+    public string? LabelState
+    {
+        get => labelState;
+        set
+        {
+            if (labelState != value)
+            {
+                labelState = value;
+                RaiseOnPropertyChanged();
+            }
+        }
     }
 
 
+    private BeeHiveFeatures beeHiveFeatures;
+
+    public BeeHiveFeatures BeeHiveFeatures
+    {
+        get => beeHiveFeatures;
+        set
+        {
+            if (beeHiveFeatures != value)
+            {
+                beeHiveFeatures = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+    }
+
+
+
+    private BeeHiveDateTimeViewModel _beeHiveDataTime;
+    public BeeHiveDateTimeViewModel BeeHiveDataTime
+	{
+		get => _beeHiveDataTime;
+		set
+		{
+			if (_beeHiveDataTime != value)
+			{
+				_beeHiveDataTime = value;
+				RaiseOnPropertyChanged();
+			}
+		}
+	}
+
+    private DateTimePointViewModel _slicedBeeHiveDateTime = DateTimePointViewModel.Empty;
+    public DateTimePointViewModel SlicedBeeHiveDateTime
+    {
+        get => _slicedBeeHiveDateTime;
+        set
+        {
+            if (_slicedBeeHiveDateTime != value)
+            {
+                _slicedBeeHiveDateTime = value;
+                RaiseOnPropertyChanged();
+            }
+        }
+    }
+
+
+
+    public ForwardCommand ForwardCommand { get; set; }
+    public BackwardCommand BackwardCommand { get; set; }
+    public SaveCommand SaveCommand { get; set; }
+    public OpenRawFileCommand OpenRawFileCommand { get; set; }
+    public OpenFeatureFileCommand OpenFeatureFileCommand { get; set; }	
+
+	
+    public MainViewModel(OpenRawFileCommand openFileCommand, OpenFeatureFileCommand openFeatureFileCommand,
+        SaveCommand saveCommand,
+        ForwardCommand forwardCommand,
+		BackwardCommand backwardCommand,		
+		BeeHiveDateTimeViewModel beeHiveDataTime)
+    {		
+        Title = "Manual labelling data for supervise learning";
+        _beeHiveDataTime = beeHiveDataTime;
+        OpenRawFileCommand = openFileCommand;
+		BackwardCommand = backwardCommand;
+		ForwardCommand = forwardCommand;
+        SaveCommand = saveCommand;
+        OpenFeatureFileCommand = openFeatureFileCommand;
+    }
 }
+
+
+
+
+
+

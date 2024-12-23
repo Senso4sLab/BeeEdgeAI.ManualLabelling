@@ -1,5 +1,6 @@
 ﻿using BeeEdgeAI.ManualLabelling.Interfaces;
 using BeeEdgeAI.ManualLabelling.Models;
+using BeeEdgeAI.ManualLabelling.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
@@ -10,27 +11,12 @@ using Windows.Storage.Pickers;
 namespace BeeEdgeAI.ManualLabelling.Commands;
 
 public class OpenRawFileCommand : DelegateCommand
-{
-    private string filePath = string.Empty;
-    public string FilePath
+{  
+    
+    private readonly BeeHiveDisplayManager _beeHiveManager;
+    public OpenRawFileCommand(BeeHiveDisplayManager beeHiveManager)
     {
-        get => filePath;
-        set
-        {
-            if(filePath != value)
-            {
-                filePath = value;
-                RaiseOnPropertyChanged();
-            }
-        }
-    }
-
-    public IEnumerable<BeeHiveRawData> BeeHiveRawData { get;set; } = new List<BeeHiveRawData>();
-
-    private readonly IRepository _repository;
-    public OpenRawFileCommand(IRepository repository)
-    {
-      _repository = repository;
+        _beeHiveManager = beeHiveManager;
     }
 
     public override bool CanExecute(object? parameter) => 
@@ -38,16 +24,20 @@ public class OpenRawFileCommand : DelegateCommand
 
     public async override void Execute(object? parameter)
     {
-        if(await OpenPickerAndPickFileAsync(parameter) is StorageFile storageFile)
+        var mainWindow = parameter as MainWindow;
+
+        if (mainWindow is null)
+            return;
+       
+        if(await OpenPickerAndPickFileAsync(parameter) is StorageFile storageFile )
         {
-            FilePath = RemoveFileNameFromPath(storageFile);
-            BeeHiveRawData = await _repository.GetAllAsync<BeeHiveRawData>(storageFile.Path);
+            mainWindow.ViewModel.FileDirectory = RemoveFileNameFromPath(storageFile);            
+            await mainWindow.ViewModel.BeeHiveDataTime.AddDataFromFile(storageFile.Path);
+            _beeHiveManager.ResetSliceIndex();
+            mainWindow.ViewModel.SlicedBeeHiveDateTime = _beeHiveManager.GetSlice.DateTimePointViewModel; 
         }
         else
-            FilePath = string.Empty;
-
-
-        
+            mainWindow.ViewModel.FileDirectory  = string.Empty;        
     }
 
     private async Task<StorageFile?> OpenPickerAndPickFileAsync(object? parameter)
@@ -74,3 +64,4 @@ public class OpenRawFileCommand : DelegateCommand
         return index == -1 ? storageFile.Path :  storageFile.Path.Remove(index);
     }
 }
+

@@ -6,6 +6,8 @@
     xmlns:local="using:BeeEdgeAI.ManualLabelling"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
+    xmlns:ssv ="using:LiveChartsCore.SkiaSharpView"
     mc:Ignorable="d"
     Title="{x:Bind ViewModel.Title}"
     x:Name="mainWindow"    
@@ -19,19 +21,69 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <AppBarButton Icon="OpenFile" Label="Raw Data"  Command="{x:Bind ViewModel.OpenRawFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>
-            <AppBarButton Icon="OpenFile" Label="Feature Data"  Command="{x:Bind ViewModel.OpenFeatureFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>
-            <AppBarButton Icon="SaveLocal" Label="Save" Click="SaveFileButton_Click"/>
+            <AppBarButton Icon="OpenFile" Label="Feature Data"  Command="{x:Bind ViewModel.OpenFeatureFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>        
         </StackPanel>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Padding="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <lvc:CartesianChart Series="{x:Bind ViewModel.BeeHiveDataTime.Series, Mode=TwoWay}"
+                                XAxes="{x:Bind ViewModel.BeeHiveDataTime.XAxes, Mode=TwoWay}"
+                                Sections="{Binding ViewModel.BeeHiveDataTime.Sections, Mode=TwoWay}"                      
+                                />
+            
+            <Grid Grid.Column="1" RowSpacing="10" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid ColumnSpacing="10" RowSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBox IsReadOnly="True" Header="SD:" Text="{x:Bind ViewModel.BeeHiveFeatures.Sd, TargetNullValue='', Mode=TwoWay}"/>
+                    <TextBox IsReadOnly="True" Header="SD gradients:" Grid.Column="1" Text="{x:Bind ViewModel.BeeHiveFeatures.SdGradient, TargetNullValue='', Mode=TwoWay}"/>
+                    <TextBox IsReadOnly="True" Header="Sum pos. neg. gradients:" Grid.Row="1" Text="{x:Bind ViewModel.BeeHiveFeatures.SumPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+                    <TextBox IsReadOnly="True" Header="Weighted sum diff. pos. neg. gradient:" Grid.Column="1" Grid.Row="1" Text="{x:Bind ViewModel.BeeHiveFeatures.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+                </Grid>
+                
+                <lvc:CartesianChart Grid.Row="1" Series="{x:Bind ViewModel.SlicedBeeHiveDateTime.Series, Mode=TwoWay}"
+                      XAxes="{x:Bind ViewModel.SlicedBeeHiveDateTime.XAxes, Mode=TwoWay}" />
+
+                <Grid Grid.Row="2" ColumnSpacing="10" RowSpacing="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>                   
+                    <Button  Content="Back" Command="{x:Bind ViewModel.BackwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch" />
+                    <Button Grid.Column="1" Content="Forward" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch"/>                   
+
+                    <ComboBox Grid.Row="1" SelectedItem="{x:Bind ViewModel.LabelState, Mode=TwoWay}" PlaceholderText="Please select state" HorizontalAlignment="Stretch">
+                        <x:String>RaisingMass</x:String>
+                        <x:String>FallingMass</x:String>
+                        <x:String>ExtremeMass</x:String>
+                        <x:String>Other</x:String>
+                    </ComboBox>
+                    <Button Grid.Row="1" Grid.Column="1" Content="Save" Command="{x:Bind ViewModel.SaveCommand}" CommandParameter="{x:Bind ViewModel.FilePath, Mode=OneWay}" HorizontalAlignment="Stretch" />
+                </Grid>
+            </Grid>         
         </Grid>
         <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" Spacing="2">
             <TextBlock Text="Save location:"  VerticalAlignment="Center" Padding="0 0 5 0"/>
-            <TextBlock Text="{x:Bind ViewModel.OpenRawFileCommand.FilePath, Mode=TwoWay}"  VerticalAlignment="Center"/>
-            <TextBox  VerticalAlignment="Center" PlaceholderText="Type file name" Width="180" Text="{x:Bind ViewModel.OpenFileName, Mode=TwoWay}"/>
+            <TextBlock Text="{x:Bind ViewModel.FileDirectory, Mode=TwoWay}"  VerticalAlignment="Center"/>
+            <TextBox  VerticalAlignment="Center" PlaceholderText="Type file name" Width="180" Text="{x:Bind ViewModel.FileName, Mode=TwoWay}"/>
             <TextBlock Text=".txt" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>          
         </StackPanel>       
     </Grid>   

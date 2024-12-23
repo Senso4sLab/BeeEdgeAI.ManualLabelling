@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using BeeEdgeAI.ManualLabelling.Commands;
+using BeeEdgeAI.ManualLabelling.Models;
 using BeeEdgeAI.ManualLabelling.Services;
 using BeeEdgeAI.ManualLabelling.ViewModels;
 using Microsoft.UI.Xaml;
@@ -14,6 +15,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using SkiaSharp;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -44,7 +46,17 @@ namespace BeeEdgeAI.ManualLabelling
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            m_window = new MainWindow(new MainViewModel(new OpenRawFileCommand(new FileRepository())));
+            var fileRepository = new FileRepository();
+            var history = new HistoryBeeHiveFeatureLabel();
+            var beeHiveDateTimeViewModel = new BeeHiveDateTimeViewModel(fileRepository);
+            var beeHiveDisplayManager = new BeeHiveDisplayManager(beeHiveDateTimeViewModel, history, 10);
+            var openFileCommand = new OpenRawFileCommand(beeHiveDisplayManager);
+            var backwardCommand = new BackwardCommand(beeHiveDisplayManager, history);
+            var forwardCommand = new ForwardCommand(beeHiveDisplayManager, history);
+            var saveCommand = new SaveCommand(fileRepository, history);
+            var openFeatureCommand = new OpenFeatureFileCommand(beeHiveDisplayManager);
+
+            m_window = new MainWindow(new MainViewModel(openFileCommand, openFeatureCommand, saveCommand ,forwardCommand, backwardCommand, beeHiveDateTimeViewModel));
             m_window.Activate();
         }
 
