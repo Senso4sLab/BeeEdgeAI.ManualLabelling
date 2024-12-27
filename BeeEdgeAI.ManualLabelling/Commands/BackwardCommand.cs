@@ -20,8 +20,8 @@ public class BackwardCommand : DelegateCommand
             var vm = _beeHiveManager.GetPreviousSlice();
             mainWindow.ViewModel.SlicedBeeHiveDateTime = vm.DateTimePointViewModel;
             mainWindow.ViewModel.BeeHiveFeatures = vm.BeeHiveFeatures;
-            var beeHaveFeatureLabel = _history.Get(_beeHiveManager.SliceIndex);
-            mainWindow.ViewModel.LabelState = _history.Get(_beeHiveManager.SliceIndex) is BeeHiveFeatureLabel hiveFeatureLabel ? hiveFeatureLabel.StateLabel : null;            
+            //var beeHaveFeatureLabel = _history.Get(_beeHiveManager.SliceIndex);
+            //mainWindow.ViewModel.LabelState = _history.Get(_beeHiveManager.SliceIndex) is BeeHiveFeatureLabel hiveFeatureLabel ? hiveFeatureLabel.StateLabel : null;            
         }
     }
 }

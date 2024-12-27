@@ -60,31 +60,45 @@
                 <Grid Grid.Row="2" ColumnSpacing="10" RowSpacing="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
-                        <ColumnDefinition />
-                    
+                        <ColumnDefinition />                    
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>                   
                     <Button  Content="Back" Command="{x:Bind ViewModel.BackwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch" />
-                    <Button Grid.Column="1" Content="Forward" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch"/>                   
+                    <Button Grid.Column="1"  Content="Save" Command="{x:Bind ViewModel.SaveCommand}" CommandParameter="{x:Bind ViewModel.FilePath, Mode=OneWay}" HorizontalAlignment="Stretch" />
 
-                    <ComboBox Grid.Row="1" SelectedItem="{x:Bind ViewModel.LabelState, Mode=TwoWay}" PlaceholderText="Please select state" HorizontalAlignment="Stretch">
+                    <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>                   
+
+                        <Button Content="Rasing Mass" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="RasingMass" HorizontalAlignment="Stretch" />
+                        <Button Grid.Column="1"  Content="Falling Mass" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="FallingMass" HorizontalAlignment="Stretch" />
+                        <Button Grid.Column="2"  Content="Extreme Mass" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="ExtremeMass" HorizontalAlignment="Stretch" />
+                        <Button Grid.Column="3"  Content="Other" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="Other" HorizontalAlignment="Stretch" />
+
+                    </Grid>
+                    <!--<Button Grid.Column="1" Content="Forward" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch"/>-->                   
+
+                    <!--<ComboBox Grid.Row="1" SelectedItem="{x:Bind ViewModel.LabelState, Mode=TwoWay}" PlaceholderText="Please select state" HorizontalAlignment="Stretch">
                         <x:String>RaisingMass</x:String>
                         <x:String>FallingMass</x:String>
                         <x:String>ExtremeMass</x:String>
                         <x:String>Other</x:String>
-                    </ComboBox>
-                    <Button Grid.Row="1" Grid.Column="1" Content="Save" Command="{x:Bind ViewModel.SaveCommand}" CommandParameter="{x:Bind ViewModel.FilePath, Mode=OneWay}" HorizontalAlignment="Stretch" />
+                    </ComboBox>-->
+                  
                 </Grid>
             </Grid>         
         </Grid>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" Spacing="2">
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" >
             <TextBlock Text="Save location:"  VerticalAlignment="Center" Padding="0 0 5 0"/>
             <TextBlock Text="{x:Bind ViewModel.FileDirectory, Mode=TwoWay}"  VerticalAlignment="Center"/>
-            <TextBox  VerticalAlignment="Center" PlaceholderText="Type file name" Width="180" Text="{x:Bind ViewModel.FileName, Mode=TwoWay}"/>
-            <TextBlock Text=".txt" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>          
+            <TextBlock Text="{x:Bind ViewModel.FileName, Mode=TwoWay}"  VerticalAlignment="Center"/>      
         </StackPanel>       
     </Grid>   
 </Window>

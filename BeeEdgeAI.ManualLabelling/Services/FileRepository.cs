@@ -22,8 +22,9 @@ public class FileRepository : IRepository
 
     public async Task SaveAsync<T>(IEnumerable<T> items, string fileName)
     {
+
         using (var writer = new StreamWriter(fileName))
-        using (var csv = new CsvWriter(writer, CsvConfig))           
+        using (var csv = new CsvWriter(writer, CsvConfig))         
             await csv.WriteRecordsAsync(items);
     }
 
@@ -31,6 +32,7 @@ public class FileRepository : IRepository
         new CsvConfiguration(CultureInfo.InvariantCulture)
         {           
             Delimiter = ";",
+            
         };
 
 

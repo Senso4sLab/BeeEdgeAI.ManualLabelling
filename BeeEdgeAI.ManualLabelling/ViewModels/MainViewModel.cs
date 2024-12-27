@@ -1,5 +1,6 @@
 ﻿using BeeEdgeAI.ManualLabelling.Commands;
 using BeeEdgeAI.ManualLabelling.Models;
+using System;
 
 
 namespace BeeEdgeAI.ManualLabelling.ViewModels;
@@ -31,28 +32,26 @@ public class MainViewModel : BaseViewModel
             {
                 fileDirectory = value;                
                 RaiseOnPropertyChanged();
-                RaiseOnPropertyChanged(nameof(FilePath));
-
-                
+                RaiseOnPropertyChanged(nameof(FilePath));                
             }
         }
     }
 
-    public string FilePath => this.FileDirectory + this.FileName + ".txt";
+    public string FilePath => this.FileDirectory + this.FileName;
 
-    private string? labelState = null;
-    public string? LabelState
-    {
-        get => labelState;
-        set
-        {
-            if (labelState != value)
-            {
-                labelState = value;
-                RaiseOnPropertyChanged();
-            }
-        }
-    }
+    //private string? labelState = null;
+    //public string? LabelState
+    //{
+    //    get => labelState;
+    //    set
+    //    {
+    //        if (labelState != value)
+    //        {
+    //            labelState = value;
+    //            RaiseOnPropertyChanged();
+    //        }
+    //    }
+    //}
 
 
     private BeeHiveFeatures beeHiveFeatures;
@@ -108,6 +107,8 @@ public class MainViewModel : BaseViewModel
     public OpenRawFileCommand OpenRawFileCommand { get; set; }
     public OpenFeatureFileCommand OpenFeatureFileCommand { get; set; }	
 
+
+    public Action ForwardCommandd { get; set; } 
 	
     public MainViewModel(OpenRawFileCommand openFileCommand, OpenFeatureFileCommand openFeatureFileCommand,
         SaveCommand saveCommand,
@@ -122,6 +123,7 @@ public class MainViewModel : BaseViewModel
 		ForwardCommand = forwardCommand;
         SaveCommand = saveCommand;
         OpenFeatureFileCommand = openFeatureFileCommand;
+
     }
 }
 

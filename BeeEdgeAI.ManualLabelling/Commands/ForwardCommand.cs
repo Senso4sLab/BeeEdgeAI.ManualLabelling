@@ -16,9 +16,9 @@ public class ForwardCommand : DelegateCommand
 
     public override void Execute(object? parameter)
     {
-        if (parameter is MainWindow mainWindow )
+        if (parameter is MainWindow mainWindow && parameter is string labelState)
         {          
-            _history.Add(_beeHiveManager.SliceIndex, new BeeHiveFeatureLabel(mainWindow.ViewModel.BeeHiveFeatures, mainWindow.ViewModel.LabelState));
+            _history.Add(_beeHiveManager.SliceIndex, new BeeHiveFeatureLabel(mainWindow.ViewModel.BeeHiveFeatures, labelState));
             mainWindow.ViewModel.SaveCommand.RaiseCanExecuteChanged();
 
             if (_beeHiveManager.CanGetNextSlice)
@@ -26,8 +26,8 @@ public class ForwardCommand : DelegateCommand
                 var vm = _beeHiveManager.GetNextSlice();
                 mainWindow.ViewModel.SlicedBeeHiveDateTime = vm.DateTimePointViewModel;
                 mainWindow.ViewModel.BeeHiveFeatures = vm.BeeHiveFeatures;
-                var beeHaveFeatureLabel = _history.Get(_beeHiveManager.SliceIndex);
-                mainWindow.ViewModel.LabelState = _history.Get(_beeHiveManager.SliceIndex) is BeeHiveFeatureLabel hiveFeatureLabel ? hiveFeatureLabel.StateLabel : null;
+                //var beeHaveFeatureLabel = _history.Get(_beeHiveManager.SliceIndex);
+                //mainWindow.ViewModel.LabelState = _history.Get(_beeHiveManager.SliceIndex) is BeeHiveFeatureLabel hiveFeatureLabel ? hiveFeatureLabel.StateLabel : null;
             }
         }
     }

@@ -28,8 +28,13 @@ public sealed partial class MainWindow : Window
     public MainWindow(MainViewModel mainViewModel)
     {
         this.InitializeComponent();
-        this.ViewModel = mainViewModel;        
+        this.ViewModel = mainViewModel;
+
+       
+    
     }
+
+    
 
     
 

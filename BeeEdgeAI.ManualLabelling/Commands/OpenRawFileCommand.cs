@@ -31,7 +31,8 @@ public class OpenRawFileCommand : DelegateCommand
        
         if(await OpenPickerAndPickFileAsync(parameter) is StorageFile storageFile )
         {
-            mainWindow.ViewModel.FileDirectory = RemoveFileNameFromPath(storageFile);            
+            mainWindow.ViewModel.FileDirectory = RemoveFileNameFromPath(storageFile);
+            mainWindow.ViewModel.FileName = storageFile.Name.Replace(storageFile.FileType, "") + "_labels" + storageFile.FileType;
             await mainWindow.ViewModel.BeeHiveDataTime.AddDataFromFile(storageFile.Path);
             _beeHiveManager.ResetSliceIndex();
             mainWindow.ViewModel.SlicedBeeHiveDateTime = _beeHiveManager.GetSlice.DateTimePointViewModel; 
@@ -63,5 +64,7 @@ public class OpenRawFileCommand : DelegateCommand
         
         return index == -1 ? storageFile.Path :  storageFile.Path.Remove(index);
     }
+
+    
 }
 
