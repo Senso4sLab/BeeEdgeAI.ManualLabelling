@@ -29,16 +29,16 @@ public class OpenRawFileCommand : DelegateCommand
         if (mainWindow is null)
             return;
        
-        if(await OpenPickerAndPickFileAsync(parameter) is StorageFile storageFile )
-        {
-            mainWindow.ViewModel.FileDirectory = RemoveFileNameFromPath(storageFile);
-            mainWindow.ViewModel.FileName = storageFile.Name.Replace(storageFile.FileType, "") + "_labels" + storageFile.FileType;
-            await mainWindow.ViewModel.BeeHiveDataTime.AddDataFromFile(storageFile.Path);
-            _beeHiveManager.ResetSliceIndex();
-            mainWindow.ViewModel.SlicedBeeHiveDateTime = _beeHiveManager.GetSlice.DateTimePointViewModel; 
-        }
-        else
-            mainWindow.ViewModel.FileDirectory  = string.Empty;        
+        //if(await OpenPickerAndPickFileAsync(parameter) is StorageFile storageFile )
+        //{
+        //    mainWindow.ViewModel.FileDirectory = RemoveFileNameFromPath(storageFile);
+        //    mainWindow.ViewModel.FileName = storageFile.Name.Replace(storageFile.FileType, "") + "_labels" + storageFile.FileType;
+        //    await mainWindow.ViewModel.BeeHiveDataTime.AddDataFromFile(storageFile.Path);
+        //    _beeHiveManager.ResetSliceIndex();
+        //    mainWindow.ViewModel.SlicedBeeHiveDateTime = _beeHiveManager.GetSlice.DateTimePointViewModel; 
+        //}
+        //else
+        //    mainWindow.ViewModel.FileDirectory  = string.Empty;        
     }
 
     private async Task<StorageFile?> OpenPickerAndPickFileAsync(object? parameter)

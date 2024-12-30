@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
     xmlns:ssv ="using:LiveChartsCore.SkiaSharpView"
+    xmlns:ctcontrols ="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
     Title="{x:Bind ViewModel.Title}"
     x:Name="mainWindow"    
@@ -20,8 +21,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <AppBarButton Icon="OpenFile" Label="Raw Data"  Command="{x:Bind ViewModel.OpenRawFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>
-            <AppBarButton Icon="OpenFile" Label="Feature Data"  Command="{x:Bind ViewModel.OpenFeatureFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>        
+            <AppBarButton Icon="OpenFile" Label="Raw Data"  Command="{x:Bind OpenFileContenDialogCommand}"/>
+            <!--<AppBarButton Icon="OpenFile" Label="Feature Data"  Command="{x:Bind ViewModel.OpenFeatureFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>-->        
         </StackPanel>
         <Grid Grid.Row="1" Padding="10">
             <Grid.ColumnDefinitions>
@@ -67,7 +68,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>                   
                     <Button  Content="Back" Command="{x:Bind ViewModel.BackwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch" />
-                    <Button Grid.Column="1"  Content="Save" Command="{x:Bind ViewModel.SaveCommand}" CommandParameter="{x:Bind ViewModel.FilePath, Mode=OneWay}" HorizontalAlignment="Stretch" />
+                    <!--<Button Grid.Column="1"  Content="Save" Command="{x:Bind ViewModel.SaveCommand}" CommandParameter="{x:Bind ViewModel.FilePath, Mode=OneWay}" HorizontalAlignment="Stretch" />-->
 
                     <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnSpacing="10">
                         <Grid.ColumnDefinitions>
@@ -99,10 +100,37 @@
         <!--<InfoBar>
             
         </InfoBar>-->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" >
+        <!--<StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" >
             <TextBlock Text="Save location:"  VerticalAlignment="Center" Padding="0 0 5 0"/>
             <TextBlock Text="{x:Bind ViewModel.FileDirectory, Mode=TwoWay}"  VerticalAlignment="Center"/>
             <TextBlock Text="{x:Bind ViewModel.FileName, Mode=TwoWay}"  VerticalAlignment="Center"/>      
-        </StackPanel>       
+        </StackPanel>-->
+
+        <ContentDialog x:Name="cdInputFiles" PrimaryButtonText="Save" CloseButtonText="Calcel" Title="Select files" >
+            <StackPanel Orientation="Vertical" Spacing="10" >
+                <ctcontrols:HeaderedContentControl Header="Beehive raw data" HorizontalContentAlignment="Stretch">
+                    <Grid ColumnSpacing="5" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="tbRawData"  Text="{x:Bind RawDataFilePath, Mode=OneWay}" IsReadOnly="True"/>
+                        <Button Grid.Column="1" Content="..." Command="{x:Bind PickRawDataFileCommand}"/>
+                    </Grid>
+                </ctcontrols:HeaderedContentControl>
+                <ctcontrols:HeaderedContentControl Header="Beehive features" HorizontalContentAlignment="Stretch" Grid.Row="1">
+                    <Grid ColumnSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="tbFeatures" Text="{x:Bind FeaturesFilePath, Mode=OneWay}" IsReadOnly="True"/>
+                        <Button Grid.Column="1" Content="..." Command="{x:Bind PickFeatureFileCommand}"/>
+                    </Grid>
+                </ctcontrols:HeaderedContentControl>
+            </StackPanel>          
+        </ContentDialog>
+        
+        
     </Grid>   
 </Window>

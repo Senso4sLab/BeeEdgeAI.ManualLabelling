@@ -1,43 +1,53 @@
 ﻿using BeeEdgeAI.ManualLabelling.Commands;
 using BeeEdgeAI.ManualLabelling.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
+using System.Threading.Tasks;
 
 
 namespace BeeEdgeAI.ManualLabelling.ViewModels;
 
-public class MainViewModel : BaseViewModel
+public partial class MainViewModel : ObservableObject
 {
-	private string fileName = string.Empty;
-	public string FileName
-	{
-		get => fileName;
-		set 
-		{ 
-			if(fileName != value)
-			{
-				fileName = value;
-				RaiseOnPropertyChanged();
-                RaiseOnPropertyChanged(nameof(FilePath));
-            }			
-		}
-	}
 
-    private string fileDirectory = string.Empty;
-    public string FileDirectory
-    {
-        get => fileDirectory;
-        set
-        {
-            if (fileDirectory != value)
-            {
-                fileDirectory = value;                
-                RaiseOnPropertyChanged();
-                RaiseOnPropertyChanged(nameof(FilePath));                
-            }
-        }
-    }
+   
 
-    public string FilePath => this.FileDirectory + this.FileName;
+    [ObservableProperty]
+    private string title = string.Empty;
+    
+    
+ //   private string fileName = string.Empty;
+	//public string FileName
+	//{
+	//	get => fileName;
+	//	set 
+	//	{ 
+	//		if(fileName != value)
+	//		{
+	//			fileName = value;
+	//			RaiseOnPropertyChanged();
+ //               RaiseOnPropertyChanged(nameof(FilePath));
+ //           }			
+	//	}
+	//}
+
+ //   private string fileDirectory = string.Empty;
+ //   public string FileDirectory
+ //   {
+ //       get => fileDirectory;
+ //       set
+ //       {
+ //           if (fileDirectory != value)
+ //           {
+ //               fileDirectory = value;                
+ //               RaiseOnPropertyChanged();
+ //               RaiseOnPropertyChanged(nameof(FilePath));                
+ //           }
+ //       }
+ //   }
+
+ //   public string FilePath => this.FileDirectory + this.FileName;
 
     //private string? labelState = null;
     //public string? LabelState
@@ -64,7 +74,7 @@ public class MainViewModel : BaseViewModel
             if (beeHiveFeatures != value)
             {
                 beeHiveFeatures = value;
-                RaiseOnPropertyChanged();
+                //RaiseOnPropertyChanged();
             }
         }
     }
@@ -80,7 +90,7 @@ public class MainViewModel : BaseViewModel
 			if (_beeHiveDataTime != value)
 			{
 				_beeHiveDataTime = value;
-				RaiseOnPropertyChanged();
+				//RaiseOnPropertyChanged();
 			}
 		}
 	}
@@ -94,7 +104,7 @@ public class MainViewModel : BaseViewModel
             if (_slicedBeeHiveDateTime != value)
             {
                 _slicedBeeHiveDateTime = value;
-                RaiseOnPropertyChanged();
+                //RaiseOnPropertyChanged();
             }
         }
     }
@@ -105,26 +115,28 @@ public class MainViewModel : BaseViewModel
     public BackwardCommand BackwardCommand { get; set; }
     public SaveCommand SaveCommand { get; set; }
     public OpenRawFileCommand OpenRawFileCommand { get; set; }
-    public OpenFeatureFileCommand OpenFeatureFileCommand { get; set; }	
+    public OpenFeatureFileCommand OpenFeatureFileCommand { get; set; }
+    public Func<Task<InputFiles?>> InputFilesFunc { get; set; }
 
-
-    public Action ForwardCommandd { get; set; } 
-	
     public MainViewModel(OpenRawFileCommand openFileCommand, OpenFeatureFileCommand openFeatureFileCommand,
         SaveCommand saveCommand,
         ForwardCommand forwardCommand,
 		BackwardCommand backwardCommand,		
 		BeeHiveDateTimeViewModel beeHiveDataTime)
-    {		
+    {	
+       
         Title = "Manual labelling data for supervise learning";
-        _beeHiveDataTime = beeHiveDataTime;
-        OpenRawFileCommand = openFileCommand;
-		BackwardCommand = backwardCommand;
-		ForwardCommand = forwardCommand;
-        SaveCommand = saveCommand;
-        OpenFeatureFileCommand = openFeatureFileCommand;
+  //      _beeHiveDataTime = beeHiveDataTime;
+  //      OpenRawFileCommand = openFileCommand;
+		//BackwardCommand = backwardCommand;
+		//ForwardCommand = forwardCommand;
+  //      SaveCommand = saveCommand;
+  //      OpenFeatureFileCommand = openFeatureFileCommand;
 
     }
+
+    
+
 }
 
 
