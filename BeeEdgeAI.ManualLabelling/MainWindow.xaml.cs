@@ -48,11 +48,8 @@ public sealed partial class MainWindow : Window
 
         this.ViewModel.InputFilesFunc = async () =>
         {
-            if(await ShowContentDialogAsync() && !string.IsNullOrWhiteSpace(RawDataFilePath) && !string.IsNullOrWhiteSpace(FeaturesFilePath))
-            {
+            if(await ShowContentDialogAsync() && !string.IsNullOrWhiteSpace(RawDataFilePath) && !string.IsNullOrWhiteSpace(FeaturesFilePath))            
                 return await CreateInputFilesAsync();
-            }
-
             return null;
         };
         
