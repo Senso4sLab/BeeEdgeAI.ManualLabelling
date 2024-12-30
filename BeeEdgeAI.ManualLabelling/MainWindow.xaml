@@ -95,6 +95,10 @@
                 </Grid>
             </Grid>         
         </Grid>
+
+        <!--<InfoBar>
+            
+        </InfoBar>-->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" >
             <TextBlock Text="Save location:"  VerticalAlignment="Center" Padding="0 0 5 0"/>
             <TextBlock Text="{x:Bind ViewModel.FileDirectory, Mode=TwoWay}"  VerticalAlignment="Center"/>
