@@ -8,6 +8,7 @@ using BeeEdgeAI.ManualLabelling.Models;
 using BeeEdgeAI.ManualLabelling.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,67 +28,30 @@ namespace BeeEdgeAI.ManualLabelling;
 [ObservableObject]
 public sealed partial class MainWindow : Window
 {
-    public MainViewModel ViewModel { get; set; }   
-    public string OpenFileName { get; set; } = string.Empty;
-
-
-    [ObservableProperty]
-    private string rawDataFilePath = string.Empty;
-
-    [ObservableProperty]
-    private string featuresFilePath = string.Empty;
-
-
-    RelayCommand InputFilesCommand { get; }
+    public MainViewModel ViewModel { get; set; }       
   
     public MainWindow(MainViewModel mainViewModel)
     {
         this.InitializeComponent();
 
-        this.ViewModel = mainViewModel;        
+        this.ViewModel = mainViewModel;
 
-        this.ViewModel.InputFilesFunc = async () =>
-        {
-            if(await ShowContentDialogAsync() && !string.IsNullOrWhiteSpace(RawDataFilePath) && !string.IsNullOrWhiteSpace(FeaturesFilePath))            
-                return await CreateInputFilesAsync();
-            return null;
-        };
-        
-       
-    }
-    
-    private async Task<bool> ShowContentDialogAsync() =>
-        await cdInputFiles.ShowAsync() == ContentDialogResult.Primary;   
+        this.ViewModel.FileSelectorControl = async () => await cdInputFiles.ShowAsync();
 
-    private async Task<InputFiles> CreateInputFilesAsync()
-    {
-        var featureFileInfo = await this.CreateFileInfoAsync(this.FeaturesFilePath);
-        var rawDataFileInfo = await this.CreateFileInfoAsync(this.RawDataFilePath);
-        return new InputFiles(rawDataFileInfo, featureFileInfo);
-    }    
-
-    private async Task<FileInfo> CreateFileInfoAsync(string filePath)
-    {
-        var storageFile = await StorageFile.GetFileFromPathAsync(this.FeaturesFilePath);
-        return new FileInfo(storageFile);
-    }
-
-
-
-
-
+      
+    }       
+  
     [RelayCommand]
     private async Task PickRawDataFile()
     {
-        RawDataFilePath = await OpenPickerAndPickFileAsync() is StorageFile storageFile ? storageFile.Path : string.Empty;       
+        ViewModel.RawDataFilePath = await OpenPickerAndPickFileAsync() is StorageFile storageFile ? storageFile.Path : string.Empty;       
     }
 
     [RelayCommand]
     private async Task PickFeatureFile()
     {
-        FeaturesFilePath = await OpenPickerAndPickFileAsync() is StorageFile storageFile ? storageFile.Path : string.Empty;
+        ViewModel.FeaturesFilePath = await OpenPickerAndPickFileAsync() is StorageFile storageFile ? storageFile.Path : string.Empty;
     }
-
 
     private async Task<StorageFile?> OpenPickerAndPickFileAsync()
     {
@@ -104,8 +68,5 @@ public sealed partial class MainWindow : Window
         return await openPicker.PickSingleFileAsync();
     }
 
-    private void tbRawData_TextChanged(object sender, TextChangedEventArgs e)
-    {
-
-    }
+   
 }

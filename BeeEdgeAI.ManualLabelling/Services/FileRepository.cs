@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using fileInfo = BeeEdgeAI.ManualLabelling.Models;
 
 namespace BeeEdgeAI.ManualLabelling.Services;
 
@@ -16,27 +17,23 @@ public class FileRepository : IRepository
     public async Task<IEnumerable<T>> GetAllAsync<T>(string fileName)
     {
         using (var reader = new StreamReader(fileName))
-        using (var csv = new CsvReader(reader, CsvConfig))
+        using (var csv = new CsvReader(reader, CsvConfig(true)))
             return await csv.GetRecordsAsync<T>().ToListAsync();
     }
 
-    public async Task SaveAsync<T>(IEnumerable<T> items, string fileName)
+    public async Task SaveAsync<T>(IEnumerable<T> items, fileInfo.FileInfo fileInfo)
     {
-
-        using (var writer = new StreamWriter(fileName))
-        using (var csv = new CsvWriter(writer, CsvConfig))         
+        var existsFile = fileInfo.Exists;
+        using (var writer = new StreamWriter(fileInfo.Path, existsFile))
+        using (var csv = new CsvWriter(writer, CsvConfig(!existsFile)))         
             await csv.WriteRecordsAsync(items);
-    }
-
-    private CsvConfiguration CsvConfig =>
+    }    
+    private CsvConfiguration CsvConfig(bool withHeader) =>
         new CsvConfiguration(CultureInfo.InvariantCulture)
         {           
-            Delimiter = ";",
-            
+            Delimiter = ";",  
+            HasHeaderRecord = withHeader,
         };
-
-
-   
 }
 
 

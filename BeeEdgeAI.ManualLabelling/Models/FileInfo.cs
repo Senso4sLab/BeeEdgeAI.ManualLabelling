@@ -28,7 +28,10 @@ public class FileInfo
         this.Path = path;
         this.Type = type;
     }
-    public FileInfo ChangeFileName(string fileName) => 
-        new FileInfo(fileName, this.Path.Replace(this.Name, fileName), this.Type);
+    public FileInfo AppendBeforeFileName(string fileName) => 
+        new FileInfo(fileName, this.Path.Replace(this.Name, fileName + this.Name), this.Type);
+
+    public bool Exists => 
+        System.IO.File.Exists(this.Path);
     
 }

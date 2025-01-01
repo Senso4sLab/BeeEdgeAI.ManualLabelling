@@ -3,7 +3,7 @@
     x:Class="BeeEdgeAI.ManualLabelling.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:BeeEdgeAI.ManualLabelling"
+    xmlns:local="using:BeeEdgeAI.ManualLabelling"    
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
@@ -14,24 +14,24 @@
     x:Name="mainWindow"    
     >
 
-    <Grid>
+    <Grid>        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <AppBarButton Icon="OpenFile" Label="Raw Data"  Command="{x:Bind OpenFileContenDialogCommand}"/>
-            <!--<AppBarButton Icon="OpenFile" Label="Feature Data"  Command="{x:Bind ViewModel.OpenFeatureFileCommand}" CommandParameter="{Binding ElementName=mainWindow}"/>-->        
+            <AppBarButton Icon="OpenFile" Label="Open Data"  Command="{x:Bind ViewModel.ShowFileSelectorControlCommand}"/>
+            <AppBarButton Icon="Save" Label="Save Data"  Command="{x:Bind ViewModel.SaveCommand}"/>
         </StackPanel>
-        <Grid Grid.Row="1" Padding="10">
+        <Grid Grid.Row="1" Padding="20,10" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <lvc:CartesianChart Series="{x:Bind ViewModel.BeeHiveDataTime.Series, Mode=TwoWay}"
-                                XAxes="{x:Bind ViewModel.BeeHiveDataTime.XAxes, Mode=TwoWay}"
-                                Sections="{Binding ViewModel.BeeHiveDataTime.Sections, Mode=TwoWay}"                      
+            <lvc:CartesianChart Series="{x:Bind ViewModel.DateTimePoints.Series, Mode=TwoWay}"
+                                XAxes="{x:Bind ViewModel.DateTimePoints.XAxes, Mode=TwoWay}"                              
+                                Title="{x:Bind ViewModel.DateTimePoints.Title, Mode=TwoWay}"                
                                 />
             
             <Grid Grid.Column="1" RowSpacing="10" >
@@ -49,64 +49,52 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBox IsReadOnly="True" Header="SD:" Text="{x:Bind ViewModel.BeeHiveFeatures.Sd, TargetNullValue='', Mode=TwoWay}"/>
-                    <TextBox IsReadOnly="True" Header="SD gradients:" Grid.Column="1" Text="{x:Bind ViewModel.BeeHiveFeatures.SdGradient, TargetNullValue='', Mode=TwoWay}"/>
-                    <TextBox IsReadOnly="True" Header="Sum pos. neg. gradients:" Grid.Row="1" Text="{x:Bind ViewModel.BeeHiveFeatures.SumPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
-                    <TextBox IsReadOnly="True" Header="Weighted sum diff. pos. neg. gradient:" Grid.Column="1" Grid.Row="1" Text="{x:Bind ViewModel.BeeHiveFeatures.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+
+                    <ctcontrols:HeaderedContentControl Header="SD" HorizontalContentAlignment="Stretch">
+                        <TextBox IsReadOnly="True"  Text="{x:Bind ViewModel.FeaturesAndLabel.Sd, TargetNullValue='', Mode=TwoWay}"/>
+                    </ctcontrols:HeaderedContentControl>
+                    <ctcontrols:HeaderedContentControl Header="SD gradients" Grid.Column="1" HorizontalContentAlignment="Stretch">
+                        <TextBox IsReadOnly="True" Text="{x:Bind ViewModel.FeaturesAndLabel.SdGradient, TargetNullValue='', Mode=TwoWay}"/>
+                    </ctcontrols:HeaderedContentControl>
+                    <ctcontrols:HeaderedContentControl Header="Sum pos. neg. gradients" Grid.Row="1" HorizontalContentAlignment="Stretch">
+                        <TextBox IsReadOnly="True"  Text="{x:Bind ViewModel.FeaturesAndLabel.SumPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+                    </ctcontrols:HeaderedContentControl >
+                    <ctcontrols:HeaderedContentControl Header="Weighted sum diff. pos. neg. gradients" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Stretch">
+                        <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" Text="{x:Bind ViewModel.FeaturesAndLabel.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+                    </ctcontrols:HeaderedContentControl>
+
+
+                    <!--<TextBox IsReadOnly="True" Header="SD:" Text="{x:Bind ViewModel.FeaturesAndLabel.Sd, TargetNullValue='', Mode=TwoWay}"/>
+                    <TextBox IsReadOnly="True" Header="SD gradients:" Grid.Column="1" Text="{x:Bind ViewModel.FeaturesAndLabel.SdGradient, TargetNullValue='', Mode=TwoWay}"/>
+                    <TextBox IsReadOnly="True" Header="Sum pos. neg. gradients:" Grid.Row="1" Text="{x:Bind ViewModel.FeaturesAndLabel.SumPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+                    <TextBox IsReadOnly="True" Header="Weighted sum diff. pos. neg. gradient:" Grid.Column="1" Grid.Row="1" Text="{x:Bind ViewModel.FeaturesAndLabel.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>-->
                 </Grid>
-                
-                <lvc:CartesianChart Grid.Row="1" Series="{x:Bind ViewModel.SlicedBeeHiveDateTime.Series, Mode=TwoWay}"
-                      XAxes="{x:Bind ViewModel.SlicedBeeHiveDateTime.XAxes, Mode=TwoWay}" />
+
+                <lvc:CartesianChart Grid.Row="1" Title="{x:Bind ViewModel.SlicedDateTimePoints.Title, Mode=TwoWay}" Series="{x:Bind ViewModel.SlicedDateTimePoints.Series, Mode=TwoWay}"
+                      XAxes="{x:Bind ViewModel.SlicedDateTimePoints.XAxes, Mode=TwoWay}" />
 
                 <Grid Grid.Row="2" ColumnSpacing="10" RowSpacing="10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />                    
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>                   
-                    <Button  Content="Back" Command="{x:Bind ViewModel.BackwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch" />
-                    <!--<Button Grid.Column="1"  Content="Save" Command="{x:Bind ViewModel.SaveCommand}" CommandParameter="{x:Bind ViewModel.FilePath, Mode=OneWay}" HorizontalAlignment="Stretch" />-->
-
-                    <Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>                   
-
-                        <Button Content="Rasing Mass" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="RasingMass" HorizontalAlignment="Stretch" />
-                        <Button Grid.Column="1"  Content="Falling Mass" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="FallingMass" HorizontalAlignment="Stretch" />
-                        <Button Grid.Column="2"  Content="Extreme Mass" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="ExtremeMass" HorizontalAlignment="Stretch" />
-                        <Button Grid.Column="3"  Content="Other" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="Other" HorizontalAlignment="Stretch" />
-
-                    </Grid>
-                    <!--<Button Grid.Column="1" Content="Forward" Command="{x:Bind ViewModel.ForwardCommand}" CommandParameter="{Binding ElementName=mainWindow}" HorizontalAlignment="Stretch"/>-->                   
-
-                    <!--<ComboBox Grid.Row="1" SelectedItem="{x:Bind ViewModel.LabelState, Mode=TwoWay}" PlaceholderText="Please select state" HorizontalAlignment="Stretch">
-                        <x:String>RaisingMass</x:String>
-                        <x:String>FallingMass</x:String>
-                        <x:String>ExtremeMass</x:String>
-                        <x:String>Other</x:String>
-                    </ComboBox>-->
-                  
+                    
+                    <Button Content="Rasing" Command="{x:Bind ViewModel.NextSliceCommand}"  CommandParameter="Rasing" HorizontalAlignment="Stretch" />
+                    <Button Grid.Column="1"  Content="Falling" Command="{x:Bind ViewModel.NextSliceCommand}"  CommandParameter="Falling" HorizontalAlignment="Stretch" />
+                    <Button Grid.Column="2"  Content="Extreme" Command="{x:Bind ViewModel.NextSliceCommand}"  CommandParameter="Extreme" HorizontalAlignment="Stretch" />
+                    <Button Grid.Column="3"  Content="Other" Command="{x:Bind ViewModel.NextSliceCommand}"  CommandParameter="Other" HorizontalAlignment="Stretch" />
+                    <Button Grid.Column="4" Content="Back" Command="{x:Bind ViewModel.PreviusSliceCommand}"  HorizontalAlignment="Stretch" />                  
                 </Grid>
             </Grid>         
-        </Grid>
+        </Grid>       
 
-        <!--<InfoBar>
-            
-        </InfoBar>-->
-        <!--<StackPanel Grid.Row="2" Orientation="Horizontal" Padding="8" >
-            <TextBlock Text="Save location:"  VerticalAlignment="Center" Padding="0 0 5 0"/>
-            <TextBlock Text="{x:Bind ViewModel.FileDirectory, Mode=TwoWay}"  VerticalAlignment="Center"/>
-            <TextBlock Text="{x:Bind ViewModel.FileName, Mode=TwoWay}"  VerticalAlignment="Center"/>      
-        </StackPanel>-->
-
-        <ContentDialog x:Name="cdInputFiles" PrimaryButtonText="Save" CloseButtonText="Calcel" Title="Select files" >
+        <ContentDialog x:Name="cdInputFiles" PrimaryButtonText="Save" CloseButtonText="Calcel" Title="Select files" 
+                       PrimaryButtonCommand="{x:Bind ViewModel.ProceedSelectedFilesCommand, Mode=OneWay}" 
+                       IsPrimaryButtonEnabled="{x:Bind ViewModel.AreValidPaths, Mode=OneWay}"
+                       >
             <StackPanel Orientation="Vertical" Spacing="10" >
                 <ctcontrols:HeaderedContentControl Header="Beehive raw data" HorizontalContentAlignment="Stretch">
                     <Grid ColumnSpacing="5" >
@@ -114,7 +102,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="tbRawData"  Text="{x:Bind RawDataFilePath, Mode=OneWay}" IsReadOnly="True"/>
+                        <TextBox x:Name="tbRawData"  Text="{x:Bind ViewModel.RawDataFilePath, Mode=OneWay}" IsReadOnly="True"/>
                         <Button Grid.Column="1" Content="..." Command="{x:Bind PickRawDataFileCommand}"/>
                     </Grid>
                 </ctcontrols:HeaderedContentControl>
@@ -124,13 +112,11 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="tbFeatures" Text="{x:Bind FeaturesFilePath, Mode=OneWay}" IsReadOnly="True"/>
+                        <TextBox x:Name="tbFeatures" Text="{x:Bind ViewModel.FeaturesFilePath, Mode=OneWay}" IsReadOnly="True"/>
                         <Button Grid.Column="1" Content="..." Command="{x:Bind PickFeatureFileCommand}"/>
                     </Grid>
                 </ctcontrols:HeaderedContentControl>
             </StackPanel>          
-        </ContentDialog>
-        
-        
+        </ContentDialog>        
     </Grid>   
 </Window>
