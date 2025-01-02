@@ -34,9 +34,7 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private SlicedDateTimePointsVM? slicedDateTimePoints;
-    public Action FileSelectorControl { get; set; }   
-
-    
+    public Action FileSelectorControl { get; set; }    
     
     private BeeHiveDataBuilder _beeHiveDataBuilder;
     private DateTimePointSlicer _slicer;
