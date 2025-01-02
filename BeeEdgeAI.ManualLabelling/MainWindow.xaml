@@ -63,8 +63,9 @@
                     </ctcontrols:HeaderedContentControl>                    
                 </Grid>
 
-                <lvc:CartesianChart Grid.Row="1" Title="{x:Bind ViewModel.SlicedDateTimePoints.Title, Mode=TwoWay}" Series="{x:Bind ViewModel.SlicedDateTimePoints.Series, Mode=TwoWay}"
-                      XAxes="{x:Bind ViewModel.SlicedDateTimePoints.XAxes, Mode=TwoWay}" />
+                <lvc:CartesianChart Grid.Row="1" Title="{x:Bind ViewModel.SlicedDateTimePoints.Title, Mode=TwoWay}" 
+                                    Series="{x:Bind ViewModel.SlicedDateTimePoints.Series, Mode=TwoWay}"
+                                    XAxes="{x:Bind ViewModel.SlicedDateTimePoints.XAxes, Mode=TwoWay}" />
 
                 <Grid Grid.Row="2" ColumnSpacing="10" RowSpacing="10">
                     <Grid.ColumnDefinitions>

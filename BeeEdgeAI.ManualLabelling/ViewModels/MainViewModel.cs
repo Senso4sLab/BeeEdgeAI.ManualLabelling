@@ -63,10 +63,10 @@ public partial class MainViewModel : ObservableObject
     {      
         _featuresStorage.Add(FeaturesAndLabel!.WithLabelValue(label));        
 
-        if(_slicer.GetNextSlice() is SlicedDateTimePointsVM SlicedDateTimePoints)
+        if(_slicer.GetNextSlice() is SlicedDateTimePointsVM slicedDateTimePoints)
         {             
-            ShowLabeledFeaturesBy(SlicedDateTimePoints.Slice);           
-            SlicedDateTimePoints!.SetTitle(FeaturesAndLabel!.Label);
+            ShowLabeledFeaturesBy(slicedDateTimePoints.Slice);
+            ShowSlicedDateTimePoints(slicedDateTimePoints);
         }
         NotifyCanExecuteCommands();
     }
@@ -78,16 +78,25 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExecutePreviusSliceCommand))]
     private void PreviusSlice()
     { 
-        if (_slicer.GetPreviousSlice() is SlicedDateTimePointsVM SlicedDateTimePoints)
+        if (_slicer.GetPreviousSlice() is SlicedDateTimePointsVM slicedDateTimePoints)
         {
-            ShowLabeledFeaturesBy(SlicedDateTimePoints.Slice);         
-            SlicedDateTimePoints!.SetTitle(FeaturesAndLabel!.Label);
+            ShowLabeledFeaturesBy(slicedDateTimePoints.Slice);
+            ShowSlicedDateTimePoints(slicedDateTimePoints);
         }
         NotifyCanExecuteCommands();
     }
 
-    private void ShowLabeledFeaturesBy(Slice slice) =>
+    private void ShowLabeledFeaturesBy(Slice slice)
+    {
         FeaturesAndLabel = _featuresStorage.GetBy(slice);
+    }
+
+    private void ShowSlicedDateTimePoints(SlicedDateTimePointsVM slicedDateTimePoints)
+    {
+        slicedDateTimePoints!.SetTitle(FeaturesAndLabel!.Label);
+        SlicedDateTimePoints = slicedDateTimePoints;
+    }
+        
 
     private bool CanExecutePreviusSliceCommand() =>
         _slicer?.CanGetPreviousSlice == true;
@@ -99,7 +108,6 @@ public partial class MainViewModel : ObservableObject
 
 
         await _featuresStorage.LoadFeaturesFromFile(FeaturesFilePath);
-
 
         _slicer = new DateTimePointSlicer(DateTimePoints, _sliceWidth);
 
