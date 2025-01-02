@@ -10,8 +10,7 @@
     xmlns:ssv ="using:LiveChartsCore.SkiaSharpView"
     xmlns:ctcontrols ="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
-    Title="{x:Bind ViewModel.Title}"
-    x:Name="mainWindow"    
+    Title="{x:Bind ViewModel.Title}"       
     >
 
     <Grid>        
@@ -61,13 +60,7 @@
                     </ctcontrols:HeaderedContentControl >
                     <ctcontrols:HeaderedContentControl Header="Weighted sum diff. pos. neg. gradients" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Stretch">
                         <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" Text="{x:Bind ViewModel.FeaturesAndLabel.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
-                    </ctcontrols:HeaderedContentControl>
-
-
-                    <!--<TextBox IsReadOnly="True" Header="SD:" Text="{x:Bind ViewModel.FeaturesAndLabel.Sd, TargetNullValue='', Mode=TwoWay}"/>
-                    <TextBox IsReadOnly="True" Header="SD gradients:" Grid.Column="1" Text="{x:Bind ViewModel.FeaturesAndLabel.SdGradient, TargetNullValue='', Mode=TwoWay}"/>
-                    <TextBox IsReadOnly="True" Header="Sum pos. neg. gradients:" Grid.Row="1" Text="{x:Bind ViewModel.FeaturesAndLabel.SumPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
-                    <TextBox IsReadOnly="True" Header="Weighted sum diff. pos. neg. gradient:" Grid.Column="1" Grid.Row="1" Text="{x:Bind ViewModel.FeaturesAndLabel.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>-->
+                    </ctcontrols:HeaderedContentControl>                    
                 </Grid>
 
                 <lvc:CartesianChart Grid.Row="1" Title="{x:Bind ViewModel.SlicedDateTimePoints.Title, Mode=TwoWay}" Series="{x:Bind ViewModel.SlicedDateTimePoints.Series, Mode=TwoWay}"

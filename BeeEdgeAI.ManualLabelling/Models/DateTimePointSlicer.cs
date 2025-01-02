@@ -7,22 +7,17 @@ using System.Threading.Tasks;
 
 namespace BeeEdgeAI.ManualLabelling.Models;
 
-public class SliceManager
+
+
+public class DateTimePointSlicer
 {
     private Slice _slice = default!;
-    private DateTimePointsVM _points = default!;
-    private readonly List<Features> _features = default!;
-    public SliceManager(Slice slice, DateTimePointsVM points, IEnumerable<Features> features)
-    {
-        _slice = slice.ResetStartIndex();
+    private DateTimePointsVM _points = default!;   
+    public DateTimePointSlicer(DateTimePointsVM points, int sliceWidth)
+    {      
         _points = points;
-        _features = features.ToList();
+        _slice = new Slice(sliceWidth);
     }
-
-    public FeaturesAndLabel? FeaturesWithDefaultLabel(Slice slice) =>
-        slice.InRange(_features.Count)
-        ? _features[slice.StartIndex].WithDefaultLabelValue(slice)
-        : null;
 
     public bool CanGetNextSlice =>
         _points.CanSlice(_slice + 1);

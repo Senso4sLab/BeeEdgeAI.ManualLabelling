@@ -1,15 +1,9 @@
-﻿using BeeEdgeAI.ManualLabelling.Commands;
-using BeeEdgeAI.ManualLabelling.Interfaces;
+﻿using BeeEdgeAI.ManualLabelling.Interfaces;
 using BeeEdgeAI.ManualLabelling.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Dispatching;
 using System;
-
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Windows.Storage;
 
 
@@ -33,7 +27,7 @@ public partial class MainViewModel : ObservableObject
         !string.IsNullOrWhiteSpace(this.FeaturesFilePath) && !string.IsNullOrWhiteSpace(this.RawDataFilePath);
 
     [ObservableProperty]
-    private FeaturesAndLabel? featuresAndLabel;
+    private LabeledFeatures? featuresAndLabel;
 
     [ObservableProperty]
     private DateTimePointsVM dateTimePoints;
@@ -42,20 +36,20 @@ public partial class MainViewModel : ObservableObject
     private SlicedDateTimePointsVM? slicedDateTimePoints;
     public Action FileSelectorControl { get; set; }   
 
-    private InputFiles _files;
-    private IRepository _repository;
+    
+    
     private BeeHiveDataBuilder _beeHiveDataBuilder;
-    private SliceManager _sliceManager;
+    private DateTimePointSlicer _slicer;
 
-    private HistoryFeaturesLabels _history;
-    private Slice _slice = new Slice(-1, 10);
-    public MainViewModel(IRepository repository, BeeHiveDataBuilder beeHiveDataBuilder, HistoryFeaturesLabels history)
+    private FeaturesStorage _featuresStorage;
+    private int _sliceWidth = 10;
+    public MainViewModel(BeeHiveDataBuilder beeHiveDataBuilder, FeaturesStorage featureStorage)
     {       
-        _repository = repository;   
+        
         _beeHiveDataBuilder = beeHiveDataBuilder;
-        _history = history;
+        _featuresStorage = featureStorage;
 
-        NotifyCanExecuteSliceManagerCommands();
+        NotifyCanExecuteCommands();
     }
 
     [RelayCommand]
@@ -67,65 +61,54 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute =nameof(CanExecuteNextSliceCommand))]
     private void NextSlice(string label)
     {      
-        _history.Add(FeaturesAndLabel!.WithLabelValue(label));        
+        _featuresStorage.Add(FeaturesAndLabel!.WithLabelValue(label));        
 
-        if(_sliceManager.GetNextSlice() is SlicedDateTimePointsVM slicePoints)
+        if(_slicer.GetNextSlice() is SlicedDateTimePointsVM SlicedDateTimePoints)
         {             
-            FeaturesAndLabel = GetFeaturesAndLabelBy(slicePoints.Slice);
-            SlicedDateTimePoints = slicePoints;
+            ShowLabeledFeaturesBy(SlicedDateTimePoints.Slice);           
             SlicedDateTimePoints!.SetTitle(FeaturesAndLabel!.Label);
         }
-        NotifyCanExecuteSliceManagerCommands();
+        NotifyCanExecuteCommands();
     }
 
     private bool CanExecuteNextSliceCommand() =>
-        _sliceManager is SliceManager sliceManager && sliceManager.CanGetNextSlice;
-
+        _slicer?.CanGetNextSlice == true;
       
 
     [RelayCommand(CanExecute = nameof(CanExecutePreviusSliceCommand))]
     private void PreviusSlice()
     { 
-        if (_sliceManager.GetPreviousSlice() is SlicedDateTimePointsVM slicePoints)
+        if (_slicer.GetPreviousSlice() is SlicedDateTimePointsVM SlicedDateTimePoints)
         {
-            FeaturesAndLabel = GetFeaturesAndLabelBy(slicePoints.Slice);        
-            SlicedDateTimePoints = slicePoints;
+            ShowLabeledFeaturesBy(SlicedDateTimePoints.Slice);         
             SlicedDateTimePoints!.SetTitle(FeaturesAndLabel!.Label);
         }
-
-        NotifyCanExecuteSliceManagerCommands();
+        NotifyCanExecuteCommands();
     }
 
-    private FeaturesAndLabel? GetFeaturesAndLabelBy(Slice slice) =>
-        _history.Get(slice) ?? _sliceManager.FeaturesWithDefaultLabel(slice);
-
-
+    private void ShowLabeledFeaturesBy(Slice slice) =>
+        FeaturesAndLabel = _featuresStorage.GetBy(slice);
 
     private bool CanExecutePreviusSliceCommand() =>
-        _sliceManager is SliceManager sliceManager && sliceManager.CanGetPreviousSlice;
+        _slicer?.CanGetPreviousSlice == true;
 
     [RelayCommand]
     private async Task ProceedSelectedFiles()
-    {
-        _files  = await CreateInputFilesAsync();
+    {           
+        DateTimePoints = await _beeHiveDataBuilder.WithDateTimeXAxis().WithLineSeries(RawDataFilePath).BuildAsync();       
 
-        var rawData  = await _repository.GetAllAsync<BeeHiveSample>(RawDataFilePath);
-        var features = await _repository.GetAllAsync<Features>(FeaturesFilePath);        
+        _slicer = new DateTimePointSlicer(DateTimePoints, _sliceWidth);
 
-        DateTimePoints = _beeHiveDataBuilder.WithDateTimeXAxis().WithLineSeries(rawData).Build();       
-
-        _sliceManager = new SliceManager(_slice, DateTimePoints, features);
-
-        if (_sliceManager.CanGetNextSlice)           
+        if (_slicer.CanGetNextSlice)           
         {
-            SlicedDateTimePoints = _sliceManager.GetNextSlice();
-            FeaturesAndLabel = _sliceManager.FeaturesWithDefaultLabel(SlicedDateTimePoints!.Slice);
+            SlicedDateTimePoints = _slicer.GetNextSlice();
+            ShowLabeledFeaturesBy(SlicedDateTimePoints!.Slice);
         }
 
-        NotifyCanExecuteSliceManagerCommands();
+        NotifyCanExecuteCommands();
     }
 
-    public void NotifyCanExecuteSliceManagerCommands()
+    public void NotifyCanExecuteCommands()
     {
         PreviusSliceCommand.NotifyCanExecuteChanged();
         NextSliceCommand.NotifyCanExecuteChanged();
@@ -133,29 +116,23 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute =nameof(CanExecuteSaveCommand))]
-    private async void Save()
-    {
-        FileInfo destFile = _files.RawData.AppendBeforeFileName("labeled_");      
-        await _history.Save(destFile);
+    private async Task Save()
+    {       
+        var destFile = await FileInfo.Create(RawDataFilePath);
+        await SaveLabeledFeaturesAsync(destFile, $"labeled_{destFile.Name}");      
+        NotifyCanExecuteCommands();
+    }
 
-        NotifyCanExecuteSliceManagerCommands();
+    private async Task SaveLabeledFeaturesAsync(FileInfo fileInfo, string fileName)
+    {        
+        fileInfo = fileInfo.SetFileName(fileName);
+        await _featuresStorage.SaveLabeledFeatures(fileInfo);
     }
 
     private bool CanExecuteSaveCommand() =>
-       !_history.IsEmpty && !string.IsNullOrEmpty(_files.RawData.Path);
+       !_featuresStorage.IsEmpty && !string.IsNullOrEmpty(RawDataFilePath);
 
-    private async Task<InputFiles> CreateInputFilesAsync()
-    {
-        var featureFileInfo = await this.CreateFileInfoAsync(this.FeaturesFilePath);
-        var rawDataFileInfo = await this.CreateFileInfoAsync(this.RawDataFilePath);
-        return new InputFiles(rawDataFileInfo, featureFileInfo);
-    }
-
-    private async Task<FileInfo> CreateFileInfoAsync(string filePath)
-    {
-        var storageFile = await StorageFile.GetFileFromPathAsync(filePath);
-        return new FileInfo(storageFile);
-    }
+   
 
 }
 

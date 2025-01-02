@@ -24,8 +24,8 @@ public class FileRepository : IRepository
     public async Task SaveAsync<T>(IEnumerable<T> items, fileInfo.FileInfo fileInfo)
     {
         var existsFile = fileInfo.Exists;
-        using (var writer = new StreamWriter(fileInfo.Path, existsFile))
-        using (var csv = new CsvWriter(writer, CsvConfig(!existsFile)))         
+        using (var writer = new StreamWriter(fileInfo.Path))
+        using (var csv = new CsvWriter(writer, CsvConfig(true)))         
             await csv.WriteRecordsAsync(items);
     }    
     private CsvConfiguration CsvConfig(bool withHeader) =>

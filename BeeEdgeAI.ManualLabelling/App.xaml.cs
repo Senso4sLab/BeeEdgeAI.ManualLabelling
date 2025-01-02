@@ -47,10 +47,10 @@ namespace BeeEdgeAI.ManualLabelling
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             var fileRepository = new FileRepository();
-            var builder = new BeeHiveDataBuilder();
-            var history = new HistoryFeaturesLabels(fileRepository);          
+            var builder = new BeeHiveDataBuilder(fileRepository);
+            var history = new FeaturesStorage(fileRepository);          
 
-            m_window = new MainWindow(new MainViewModel(fileRepository, builder, history));
+            m_window = new MainWindow(new MainViewModel(builder, history));
             m_window.Activate();
         }
 

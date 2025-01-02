@@ -29,8 +29,8 @@ public class Features
         this.WeightedSumDiffPosNegGradient = weightedSumDiffPosNegGradient;
     }
 
-    public FeaturesAndLabel WithDefaultLabelValue(Slice slice) =>
-        new FeaturesAndLabel(slice, this, string.Empty);
+    public LabeledFeatures WithDefaultLabel(Slice slice) =>
+        new LabeledFeatures(slice, this, string.Empty);
 
     
 }

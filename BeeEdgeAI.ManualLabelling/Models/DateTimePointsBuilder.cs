@@ -1,16 +1,18 @@
-﻿using BeeEdgeAI.ManualLabelling.ViewModels;
+﻿using BeeEdgeAI.ManualLabelling.Interfaces;
+using BeeEdgeAI.ManualLabelling.ViewModels;
 using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BeeEdgeAI.ManualLabelling.Models;
 
 
-public class DateTimePointsBuilder<T>
+public abstract class DateTimePointsBuilder<T>
 {
     private int _geometrySize = 2;
 
@@ -21,16 +23,20 @@ public class DateTimePointsBuilder<T>
     };
 
     private SolidColorPaint _geometryStroke = new SolidColorPaint(SKColors.CornflowerBlue, 3);
-    private SolidColorPaint _fill = new SolidColorPaint(SKColors.CornflowerBlue.WithAlpha(40), 3);
+    private SolidColorPaint _fill = new SolidColorPaint(SKColors.CornflowerBlue.WithAlpha(40), 3);   
 
-    private IEnumerable<DateTimePoint> _dataTimePoints = Enumerable.Empty<DateTimePoint>();
-    private IEnumerable<DateTimePoint> _fillTimePoints = Enumerable.Empty<DateTimePoint>();
+    protected abstract Func<T, DateTimePoint> Mapping { get;}
 
-    private Func<T, DateTimePoint> _mapping;
     private TimeSpan _unitTimeSpan = TimeSpan.FromMinutes(1);
     private string _dateTimeFormat = "H:mm";
-    public DateTimePointsBuilder(Func<T, DateTimePoint> mapping) =>
-        _mapping = mapping;
+    
+    
+    private IRepository _repository;    
+    private Task<IEnumerable<T>> _points;    
+    public DateTimePointsBuilder(IRepository repository)
+    {       
+        _repository = repository;
+    }
 
     public DateTimePointsBuilder<T> WithDateTimeXAxis(TimeSpan? timeSpan = null, string? dateFormat = null)
     {
@@ -38,9 +44,10 @@ public class DateTimePointsBuilder<T>
         _dateTimeFormat = dateFormat ?? _dateTimeFormat;
         return this;
     }
-    public DateTimePointsBuilder<T> WithLineSeries(IEnumerable<T> data, SolidColorPaint? stroke = null, SolidColorPaint? geometryStroke = null, int? geometrySize = null)
+    public DateTimePointsBuilder<T> WithLineSeries(string filePath, SolidColorPaint? stroke = null, SolidColorPaint? geometryStroke = null, int? geometrySize = null)
     {
-        _dataTimePoints = data.Select(d => _mapping(d));
+
+        _points = _repository.GetAllAsync<T>(filePath);      
         _stroke = stroke ?? _stroke;
         _geometryStroke = geometryStroke ?? _geometryStroke;
         _geometrySize = geometrySize ?? _geometrySize;
@@ -67,9 +74,10 @@ public class DateTimePointsBuilder<T>
         new DateTimeAxis(_unitTimeSpan, date => date.ToString(_dateTimeFormat));
 
 
-    public DateTimePointsVM Build()
+    public async Task<DateTimePointsVM> BuildAsync()
     {
-        var _lineSeries = CreateLineSeries(_dataTimePoints.ToList(), true);
+        var result = await _points;
+        var _lineSeries = CreateLineSeries(result.Select(Mapping).ToList(), true);
         var _fillSeries = CreateLineSeries([], false, _fill);
         var _xAxes = CreateDateTimeAxis();
         return new DateTimePointsVM(_lineSeries, _fillSeries, _xAxes);

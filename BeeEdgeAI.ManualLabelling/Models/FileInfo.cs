@@ -22,14 +22,17 @@ public class FileInfo
         this.Type = storageFile.FileType;
     }  
 
+    public static async Task<FileInfo> Create(string filePath) =>
+        new FileInfo(await StorageFile.GetFileFromPathAsync(filePath));
+
     private FileInfo(string name, string path, string type)
     {
         this.Name = name;
         this.Path = path;
         this.Type = type;
     }
-    public FileInfo AppendBeforeFileName(string fileName) => 
-        new FileInfo(fileName, this.Path.Replace(this.Name, fileName + this.Name), this.Type);
+    public FileInfo SetFileName(string fileName) => 
+        new FileInfo(fileName, this.Path.Replace(this.Name, fileName + this.Type), this.Type);
 
     public bool Exists => 
         System.IO.File.Exists(this.Path);

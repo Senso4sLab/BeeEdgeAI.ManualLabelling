@@ -8,12 +8,14 @@ namespace BeeEdgeAI.ManualLabelling.Models;
 
 public record Slice(int StartIndex, int Width)
 {
+    public Slice(int width) : this(0, width) { }
+    
     public int EndIndex => this.StartIndex + this.Width;
 
     public bool InRange(int maxIndex) =>
        StartIndex >= 0 && EndIndex < maxIndex;
 
-    public Slice ResetStartIndex() =>
+    public Slice Reset() =>
         this with { StartIndex = -1 };
 
     public static Slice operator ++(Slice slice) => 
