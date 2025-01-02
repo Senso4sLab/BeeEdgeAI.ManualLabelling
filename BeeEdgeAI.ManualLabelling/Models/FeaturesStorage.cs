@@ -16,7 +16,7 @@ public class FeaturesStorage
     public FeaturesStorage(IRepository fileRepository)
     {
         _fileRepository = fileRepository;
-    }
+    }   
     public async Task LoadFeaturesFromFile(string filePath) => 
         AddToDictionary(await GetFeaturesAsync(filePath));
     private async Task<IEnumerable<Features>> GetFeaturesAsync(string filePath) => 

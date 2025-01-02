@@ -94,8 +94,12 @@ public partial class MainViewModel : ObservableObject
 
     [RelayCommand]
     private async Task ProceedSelectedFiles()
-    {           
-        DateTimePoints = await _beeHiveDataBuilder.WithDateTimeXAxis().WithLineSeries(RawDataFilePath).BuildAsync();       
+    {
+        DateTimePoints = await _beeHiveDataBuilder.WithDateTimeXAxis().WithLineSeries(RawDataFilePath).BuildAsync();
+
+
+        await _featuresStorage.LoadFeaturesFromFile(FeaturesFilePath);
+
 
         _slicer = new DateTimePointSlicer(DateTimePoints, _sliceWidth);
 
@@ -107,6 +111,8 @@ public partial class MainViewModel : ObservableObject
 
         NotifyCanExecuteCommands();
     }
+
+  
 
     public void NotifyCanExecuteCommands()
     {

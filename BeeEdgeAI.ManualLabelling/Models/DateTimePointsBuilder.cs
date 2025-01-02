@@ -46,7 +46,6 @@ public abstract class DateTimePointsBuilder<T>
     }
     public DateTimePointsBuilder<T> WithLineSeries(string filePath, SolidColorPaint? stroke = null, SolidColorPaint? geometryStroke = null, int? geometrySize = null)
     {
-
         _points = _repository.GetAllAsync<T>(filePath);      
         _stroke = stroke ?? _stroke;
         _geometryStroke = geometryStroke ?? _geometryStroke;
