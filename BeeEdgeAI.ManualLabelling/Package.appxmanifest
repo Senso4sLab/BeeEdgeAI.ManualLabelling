@@ -10,7 +10,7 @@
   <Identity
     Name="5ca0ce8d-5892-445d-a36b-13656ffbf2f1"
     Publisher="CN=samos"
-    Version="1.0.7.0" />
+    Version="1.0.11.0" />
 
   <mp:PhoneIdentity PhoneProductId="5ca0ce8d-5892-445d-a36b-13656ffbf2f1" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

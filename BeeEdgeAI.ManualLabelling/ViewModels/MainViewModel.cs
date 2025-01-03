@@ -116,9 +116,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         NotifyCanExecuteCommands();
-    }
-
-  
+    }  
 
     public void NotifyCanExecuteCommands()
     {
