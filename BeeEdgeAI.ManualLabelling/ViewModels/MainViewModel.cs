@@ -33,6 +33,8 @@ public partial class MainViewModel : ObservableObject
     private DateTimePointsVM dateTimePoints;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(NextSliceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(PreviusSliceCommand))]
     private SlicedDateTimePointsVM? slicedDateTimePoints;
     public Action FileSelectorControl { get; set; }    
     
@@ -42,11 +44,9 @@ public partial class MainViewModel : ObservableObject
     private FeaturesStorage _featuresStorage;
     private int _sliceWidth = 10;
     public MainViewModel(BeeHiveDataBuilder beeHiveDataBuilder, FeaturesStorage featureStorage)
-    {       
-        
+    {         
         _beeHiveDataBuilder = beeHiveDataBuilder;
-        _featuresStorage = featureStorage;
-        NotifyCanExecuteCommands();
+        _featuresStorage = featureStorage;       
     }
 
     [RelayCommand]
@@ -64,8 +64,7 @@ public partial class MainViewModel : ObservableObject
         {
             ShowLabeledFeaturesBy(slicedDateTimePoints.Slice);
             ShowSlicedDateTimePoints(slicedDateTimePoints, LabeledFeatures.Label);
-        }
-        NotifyCanExecuteCommands();
+        }       
     }
 
     private bool CanExecuteNextSliceCommand() =>
@@ -73,14 +72,12 @@ public partial class MainViewModel : ObservableObject
 
     [RelayCommand(CanExecute = nameof(CanExecutePreviusSliceCommand))]
     private void PreviusSlice()
-    {         
-
+    { 
         if (_slicer.GetPreviousSlice() is SlicedDateTimePointsVM slicedDateTimePoints)
         {
             ShowLabeledFeaturesBy(slicedDateTimePoints.Slice);
             ShowSlicedDateTimePoints(slicedDateTimePoints, LabeledFeatures.Label);
-        }
-        NotifyCanExecuteCommands();
+        }       
     }
 
     private void ShowLabeledFeaturesBy(Slice slice)
@@ -111,24 +108,14 @@ public partial class MainViewModel : ObservableObject
         {
             SlicedDateTimePoints = _slicer.GetNextSlice();
             ShowLabeledFeaturesBy(SlicedDateTimePoints!.Slice);
-        }
-
-        NotifyCanExecuteCommands();
+        }      
     }  
 
-    public void NotifyCanExecuteCommands()
-    {
-        PreviusSliceCommand.NotifyCanExecuteChanged();
-        NextSliceCommand.NotifyCanExecuteChanged();
-        SaveCommand.NotifyCanExecuteChanged();
-    }
-
-    [RelayCommand(CanExecute =nameof(CanExecuteSaveCommand))]
+    [RelayCommand(CanExecute =nameof(CanExecuteSaveCommand))]   
     private async Task Save()
     {       
         var destFile = await FileInfo.Create(RawDataFilePath);
-        await SaveLabeledFeaturesAsync(destFile, $"labeled_{destFile.Name}");      
-        NotifyCanExecuteCommands();
+        await SaveLabeledFeaturesAsync(destFile, $"labeled_{destFile.Name}");       
     }
 
     private async Task SaveLabeledFeaturesAsync(FileInfo fileInfo, string fileName)

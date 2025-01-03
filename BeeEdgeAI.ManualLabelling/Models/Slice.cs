@@ -8,7 +8,7 @@ namespace BeeEdgeAI.ManualLabelling.Models;
 
 public record Slice(int StartIndex, int Width)
 {
-    public Slice(int width) : this(0, width) { }
+    public Slice(int width) : this(-1, width) { }
     
     public int EndIndex => this.StartIndex + this.Width;
 
