@@ -27,7 +27,7 @@ public partial class MainViewModel : ObservableObject
         !string.IsNullOrWhiteSpace(this.FeaturesFilePath) && !string.IsNullOrWhiteSpace(this.RawDataFilePath);
 
     [ObservableProperty]
-    private LabeledFeatures? featuresAndLabel;
+    private LabeledFeatures labeledFeatures;
 
     [ObservableProperty]
     private DateTimePointsVM dateTimePoints;
@@ -46,7 +46,6 @@ public partial class MainViewModel : ObservableObject
         
         _beeHiveDataBuilder = beeHiveDataBuilder;
         _featuresStorage = featureStorage;
-
         NotifyCanExecuteCommands();
     }
 
@@ -59,40 +58,40 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute =nameof(CanExecuteNextSliceCommand))]
     private void NextSlice(string label)
     {      
-        _featuresStorage.Add(FeaturesAndLabel!.WithLabelValue(label));        
+        _featuresStorage.Add(LabeledFeatures.SetLabel(label));       
 
-        if(_slicer.GetNextSlice() is SlicedDateTimePointsVM slicedDateTimePoints)
-        {             
+        if (_slicer.GetNextSlice() is SlicedDateTimePointsVM slicedDateTimePoints)
+        {
             ShowLabeledFeaturesBy(slicedDateTimePoints.Slice);
-            ShowSlicedDateTimePoints(slicedDateTimePoints);
+            ShowSlicedDateTimePoints(slicedDateTimePoints, LabeledFeatures.Label);
         }
         NotifyCanExecuteCommands();
     }
 
     private bool CanExecuteNextSliceCommand() =>
-        _slicer?.CanGetNextSlice == true;
-      
+        _slicer?.CanGetNextSlice == true;      
 
     [RelayCommand(CanExecute = nameof(CanExecutePreviusSliceCommand))]
     private void PreviusSlice()
-    { 
+    {         
+
         if (_slicer.GetPreviousSlice() is SlicedDateTimePointsVM slicedDateTimePoints)
         {
             ShowLabeledFeaturesBy(slicedDateTimePoints.Slice);
-            ShowSlicedDateTimePoints(slicedDateTimePoints);
+            ShowSlicedDateTimePoints(slicedDateTimePoints, LabeledFeatures.Label);
         }
         NotifyCanExecuteCommands();
     }
 
     private void ShowLabeledFeaturesBy(Slice slice)
     {
-        FeaturesAndLabel = _featuresStorage.GetBy(slice);
+        LabeledFeatures = _featuresStorage.GetBy(slice);
     }
 
-    private void ShowSlicedDateTimePoints(SlicedDateTimePointsVM slicedDateTimePoints)
+    private void ShowSlicedDateTimePoints(SlicedDateTimePointsVM slicedDateTimePoints, string title)
     {
-        slicedDateTimePoints!.SetTitle(FeaturesAndLabel!.Label);
-        SlicedDateTimePoints = slicedDateTimePoints;
+        slicedDateTimePoints.SetTitle(title);
+        SlicedDateTimePoints = slicedDateTimePoints;        
     }
         
 
@@ -103,7 +102,6 @@ public partial class MainViewModel : ObservableObject
     private async Task ProceedSelectedFiles()
     {
         DateTimePoints = await _beeHiveDataBuilder.WithDateTimeXAxis().WithLineSeries(RawDataFilePath).BuildAsync();
-
 
         await _featuresStorage.LoadFeaturesFromFile(FeaturesFilePath);
 

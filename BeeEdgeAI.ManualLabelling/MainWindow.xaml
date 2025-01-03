@@ -50,16 +50,16 @@
                     </Grid.RowDefinitions>
 
                     <ctcontrols:HeaderedContentControl Header="SD" HorizontalContentAlignment="Stretch">
-                        <TextBox IsReadOnly="True"  Text="{x:Bind ViewModel.FeaturesAndLabel.Sd, TargetNullValue='', Mode=TwoWay}"/>
+                        <TextBox IsReadOnly="True"  Text="{x:Bind ViewModel.LabeledFeatures.Sd, TargetNullValue='', Mode=TwoWay}"/>
                     </ctcontrols:HeaderedContentControl>
                     <ctcontrols:HeaderedContentControl Header="SD gradients" Grid.Column="1" HorizontalContentAlignment="Stretch">
-                        <TextBox IsReadOnly="True" Text="{x:Bind ViewModel.FeaturesAndLabel.SdGradient, TargetNullValue='', Mode=TwoWay}"/>
+                        <TextBox IsReadOnly="True" Text="{x:Bind ViewModel.LabeledFeatures.SdGradient, TargetNullValue='', Mode=TwoWay}"/>
                     </ctcontrols:HeaderedContentControl>
                     <ctcontrols:HeaderedContentControl Header="Sum pos. neg. gradients" Grid.Row="1" HorizontalContentAlignment="Stretch">
-                        <TextBox IsReadOnly="True"  Text="{x:Bind ViewModel.FeaturesAndLabel.SumPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+                        <TextBox IsReadOnly="True"  Text="{x:Bind ViewModel.LabeledFeatures.SumPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
                     </ctcontrols:HeaderedContentControl >
                     <ctcontrols:HeaderedContentControl Header="Weighted sum diff. pos. neg. gradients" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Stretch">
-                        <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" Text="{x:Bind ViewModel.FeaturesAndLabel.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
+                        <TextBox IsReadOnly="True" HorizontalAlignment="Stretch" Text="{x:Bind ViewModel.LabeledFeatures.WeightedSumDiffPosNegGradient, TargetNullValue='', Mode=TwoWay}"/>
                     </ctcontrols:HeaderedContentControl>                    
                 </Grid>
 

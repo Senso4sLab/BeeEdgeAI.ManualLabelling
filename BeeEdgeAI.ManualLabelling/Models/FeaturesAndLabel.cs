@@ -19,7 +19,7 @@ public partial class LabeledFeatures : Features
         this.Label = label;
     }
 
-    public LabeledFeatures WithLabelValue(string label) =>
+    public LabeledFeatures SetLabel(string label) =>
        new LabeledFeatures(this.Slice, this, label);
 
 
