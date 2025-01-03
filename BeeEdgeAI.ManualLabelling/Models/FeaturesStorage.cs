@@ -1,4 +1,5 @@
 ﻿using BeeEdgeAI.ManualLabelling.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,12 +32,12 @@ public class FeaturesStorage
         else        
             _features.Add(feature.Slice.StartIndex, feature);
     }
-    public LabeledFeatures? GetBy(Slice slice) =>
+    public LabeledFeatures GetBy(Slice slice) =>
        _features.TryGetValue(slice.StartIndex, out Features? features) 
         ? features is LabeledFeatures labeledFeatures 
         ? labeledFeatures 
         : features.WithDefaultLabel(slice) : 
-        null;
+        throw new Exception($"Features with slice index {slice.StartIndex} does not exist!");
 
     public async Task SaveLabeledFeatures(FileInfo dest) => 
         await _fileRepository.SaveAsync(GetLabeledFeatures(), dest);
