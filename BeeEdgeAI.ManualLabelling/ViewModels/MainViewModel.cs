@@ -35,6 +35,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(NextSliceCommand))]
     [NotifyCanExecuteChangedFor(nameof(PreviusSliceCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private SlicedDateTimePointsVM? slicedDateTimePoints;
     public Action FileSelectorControl { get; set; }    
     
