@@ -43,7 +43,7 @@ public partial class MainViewModel : ObservableObject
     private DateTimePointSlicer _slicer;
 
     private FeaturesStorage _featuresStorage;
-    private int _sliceWidth = 10;
+    private int _sliceWidth = 9;
     public MainViewModel(BeeHiveDataBuilder beeHiveDataBuilder, FeaturesStorage featureStorage)
     {         
         _beeHiveDataBuilder = beeHiveDataBuilder;
